@@ -1,5 +1,6 @@
 FROM java:8
+VOLUME /tmp
+ADD docker-devops-tutorials-3.0.0-SNAPSHOT.jar app.jar
 ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-CMD ["java", "-version"]
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","docker-devops-tutorials-3.0.0-SNAPSHOT.jar"]
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && bash -c 'touch /app.jar'
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
