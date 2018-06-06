@@ -42,7 +42,6 @@
                         <version>${docker-maven-plugin.version}</version>
                         <configuration>
                             <dockerHost>${docker.dev.Host}</dockerHost>
-                            <serverId>docker-devops-dev</serverId>
                             <imageName>${docker.dev.image.prefix}/${project.artifactId}</imageName>
                             <imageTags>
                                 <imageTag>${project.version}</imageTag>
