@@ -15,7 +15,9 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <docker.image.prefix>192.168.130.134:8081/tax</docker.image.prefix>
+        <docker.dev.image.prefix>192.168.0.152:8081/tax</docker.dev.image.prefix>
+        <docker.dev.Host>http://192.168.0.152:2375</docker.dev.Host>
+        <docker-maven-plugin>0.4.13</docker-maven-plugin>
     </properties>
 
     <dependencies>
@@ -25,34 +27,45 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <!--开发环境-->
+        <profile>
+            <id>dev</id>
+            <build>
+                <plugins>
+                    <!--基于Docker的镜像build、push插件-->
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin}</version>
+                        <configuration>
+                            <dockerHost>${docker.dev.Host}</dockerHost>
+                            <imageName>${docker.dev.image.prefix}/${project.artifactId}</imageName>
+                            <imageTags>
+                                <imageTag>${project.version}</imageTag>
+                                <imageTag>latest</imageTag>
+                            </imageTags>
+                            <dockerDirectory>${project.basedir}/docker</dockerDirectory>
+                            <resources>
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <!---->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.4.13</version>
-                <configuration>
-                    <!--<dockerHost>http://192.168.0.152:2375</dockerHost>-->
-                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                    <imageTags>
-                        <imageTag>${project.version}</imageTag>
-                        <imageTag>latest</imageTag>
-                    </imageTags>
-                    <dockerDirectory>${project.basedir}/docker</dockerDirectory>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                </configuration>
             </plugin>
         </plugins>
     </build>
