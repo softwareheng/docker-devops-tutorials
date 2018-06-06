@@ -38,7 +38,6 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.13</version>
                 <configuration>
-                    <dockerHost>http://47.94.230.242:2375</dockerHost>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <imageTags>
                         <imageTag>${project.version}</imageTag>
@@ -54,7 +53,6 @@
                     </resources>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
