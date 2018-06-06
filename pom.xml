@@ -19,9 +19,6 @@
 
         <docker.dev.image.prefix>192.168.0.152:8081/tax</docker.dev.image.prefix>
         <docker.dev.Host>http://192.168.0.152:2375</docker.dev.Host>
-
-        <docker.test.image.prefix>47.94.230.242:8081/tax</docker.test.image.prefix>
-        <docker.test.Host>http://47.94.230.242:2375</docker.test.Host>
     </properties>
 
     <dependencies>
@@ -35,6 +32,7 @@
         <!--开发环境 119.3.3.64-->
         <profile>
             <id>dev</id>
+
             <build>
                 <plugins>
                     <!--基于Docker的镜像build、push插件-->
@@ -46,37 +44,6 @@
                             <dockerHost>${docker.dev.Host}</dockerHost>
                             <serverId>docker-devops-dev</serverId>
                             <imageName>${docker.dev.image.prefix}/${project.artifactId}</imageName>
-                            <imageTags>
-                                <imageTag>${project.version}</imageTag>
-                            </imageTags>
-                            <dockerDirectory>${project.basedir}/docker</dockerDirectory>
-                            <resources>
-                                <resource>
-                                    <targetPath>/</targetPath>
-                                    <directory>${project.build.directory}</directory>
-                                    <include>${project.build.finalName}.jar</include>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <!--测试环境 47.94.230.242-->
-        <profile>
-            <id>test</id>
-            <build>
-                <plugins>
-                    <!--基于Docker的镜像build、push插件-->
-                    <plugin>
-                        <groupId>com.spotify</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-maven-plugin.version}</version>
-                        <configuration>
-                            <dockerHost>${docker.test.Host}</dockerHost>
-                            <serverId>docker-test</serverId>
-                            <imageName>${docker.test.image.prefix}/${project.artifactId}</imageName>
                             <imageTags>
                                 <imageTag>${project.version}</imageTag>
                             </imageTags>
