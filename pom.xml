@@ -21,7 +21,7 @@
         <docker.dev.Host>http://192.168.0.152:2375</docker.dev.Host>-->
         <docker.dev.image.prefix>47.94.230.242:8081/tax</docker.dev.image.prefix>
         <docker.dev.Host>http://47.94.230.242:2375</docker.dev.Host>
-        <docker.repostory>47.94.230.242:8081</docker.repostory>
+        <docker.repository>47.94.230.242:8081</docker.repository>
         <docker.registry.name>tax</docker.registry.name>
     </properties>
 
@@ -147,7 +147,7 @@
                                 </goals>
                                 <configuration>
                                     <image>${docker.registry.name}/${project.artifactId}:${project.version}</image>
-                                    <newName>${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}</newName>
+                                    <newName>${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}</newName>
                                 </configuration>
                             </execution>
 
@@ -158,7 +158,7 @@
                                     <goal>push</goal>
                                 </goals>
                                 <configuration>
-                                    <imageName>${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}</imageName>
+                                    <imageName>${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}</imageName>
                                 </configuration>
                             </execution>
                         </executions>
@@ -167,7 +167,7 @@
                             <pushImage>true</pushImage>
                             <dockerDirectory>target/docker</dockerDirectory>
                             <imageName>
-                                ${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}
+                                ${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}
                             </imageName>
                             <imageTags>
                                 <imageTag>${project.version}</imageTag>
