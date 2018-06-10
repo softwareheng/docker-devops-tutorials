@@ -11,6 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class DevopsDemoController {
 
     /**
+     * 入口
+     */
+    @GetMapping(value = "/")
+    public String home() {
+        return "欢迎访问基于Docker的持续集成和持续交付项目样例";
+    }
+
+    /**
      * hello world
      *
      * @param name 姓名
