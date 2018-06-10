@@ -62,7 +62,7 @@
                     </execution>
                     <execution>
                         <id>tag-image</id>
-                        <phase>deploy</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>tag</goal>
                         </goals>
@@ -74,7 +74,7 @@
                     </execution>
                     <execution>
                         <id>push-image</id>
-                        <phase>deploy</phase>
+                        <phase>install</phase>
                         <goals>
                             <goal>push</goal>
                         </goals>
