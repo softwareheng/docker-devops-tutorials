@@ -56,9 +56,6 @@
                         <goals>
                             <goal>build</goal>
                         </goals>
-                        <configuration>
-                            <dockerHost>${docker.dev.Host}</dockerHost>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>tag-image</id>
@@ -67,7 +64,6 @@
                             <goal>tag</goal>
                         </goals>
                         <configuration>
-                            <dockerHost>${docker.dev.Host}</dockerHost>
                             <image>${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}</image>
                             <newName>${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test</newName>
                         </configuration>
@@ -79,16 +75,17 @@
                             <goal>push</goal>
                         </goals>
                         <configuration>
-                            <dockerHost>${docker.dev.Host}</dockerHost>
                             <serverId>harbor</serverId>
                             <registryUrl>http://47.94.230.242:8081/v2/</registryUrl>
                             <imageName>
-                                ${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}
+                                ${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test
                             </imageName>
+
                         </configuration>
                     </execution>
                 </executions>
                 <configuration>
+                    <dockerHost>${docker.dev.Host}</dockerHost>
                     <dockerDirectory>target/docker</dockerDirectory>
                     <imageName>
                         ${docker.repository}/${docker.registry.name}/${project.artifactId}
