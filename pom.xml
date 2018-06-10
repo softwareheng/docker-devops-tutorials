@@ -72,7 +72,9 @@
                 </executions>
 
                 <configuration>
-                    <dockerHost>${docker.dev.Host}</dockerHost>
+                   <!-- <dockerHost>${docker.dev.Host}</dockerHost>-->
+                    <serverId>harbor</serverId>
+                    <registryUrl>http://47.94.230.242:8081/v2/</registryUrl>
                     <dockerDirectory>target/docker</dockerDirectory>
                     <imageName>
                         ${docker.repository}/${docker.registry.name}/${project.artifactId}
@@ -80,7 +82,6 @@
                     <imageTags>
                         <imageTag>${project.version}</imageTag>
                     </imageTags>
-
                     <resources>
                         <rescource>
                             <targetPath>/</targetPath>
