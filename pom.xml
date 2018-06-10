@@ -17,8 +17,10 @@
     <properties>
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
 
-        <docker.dev.image.prefix>192.168.0.152:8081/tax</docker.dev.image.prefix>
-        <docker.dev.Host>http://192.168.0.152:2375</docker.dev.Host>
+ <!--       <docker.dev.image.prefix>192.168.0.152:8081/tax</docker.dev.image.prefix>
+        <docker.dev.Host>http://192.168.0.152:2375</docker.dev.Host>-->
+        <docker.dev.image.prefix>47.94.230.242:8081/tax</docker.dev.image.prefix>
+        <docker.dev.Host>http://47.94.230.242:2375</docker.dev.Host>
     </properties>
 
     <dependencies>
@@ -51,7 +53,8 @@
                                 <resource>
                                     <targetPath>/</targetPath>
                                     <directory>${project.build.directory}</directory>
-                                    <include>${project.build.finalName}.jar</include>
+                                   <!-- <include>${project.build.finalName}.jar</include>-->
+                                    <include>${project.artifactId}.jar</include>
                                 </resource>
                             </resources>
                         </configuration>
