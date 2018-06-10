@@ -21,6 +21,8 @@
         <docker.dev.Host>http://192.168.0.152:2375</docker.dev.Host>-->
         <docker.dev.image.prefix>47.94.230.242:8081/tax</docker.dev.image.prefix>
         <docker.dev.Host>http://47.94.230.242:2375</docker.dev.Host>
+        <docker.repostory>47.94.230.242:8081</docker.repostory>
+        <docker.registry.name>tax</docker.registry.name>
     </properties>
 
     <dependencies>
@@ -28,6 +30,24 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <profiles>
@@ -35,9 +55,19 @@
         <profile>
             <id>dev</id>
 
-            <build>
+           <!-- <build>
+                <resources>&lt;!&ndash; 使用@@站位符，输出Dockerfile至docker文件夹 &ndash;&gt;
+                    <resource>
+                        <directory>src/main/java/docker</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>**/Dockerfile</include>
+                        </includes>
+                        <targetPath>src/main/java/docker</targetPath>
+                    </resource>
+                </resources>
                 <plugins>
-               <!--     <plugin>
+               &lt;!&ndash;     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>${docker-maven-plugin.version}</version>
@@ -57,8 +87,8 @@
                                 </resource>
                             </resources>
                         </configuration>
-                    </plugin>-->
-                    <!--基于Dockerfile的镜像build、push插件-->
+                    </plugin>&ndash;&gt;
+                    &lt;!&ndash;基于Dockerfile的镜像build、push插件&ndash;&gt;
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
@@ -76,6 +106,80 @@
                                     <directory>${project.build.directory}</directory>
                                     <include>${project.build.finalName}.${project.packaging}</include>
                                 </resource>
+                            </resources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>-->
+            <build>
+                <resources><!-- 使用@@站位符，输出Dockerfile至docker文件夹 -->
+                    <resource>
+                        <directory>src/main/docker</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>**/Dockerfile</include>
+                        </includes>
+                        <targetPath>../docker</targetPath>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin><!-- 置顶 -->
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>0.4.13</version>
+                        <executions>
+
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>tag-image</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <image>${docker.registry.name}/${project.artifactId}:${project.version}</image>
+                                    <newName>${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}</newName>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>push-image</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <imageName>${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}</imageName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <dockerHost>${docker.dev.Host}</dockerHost>
+                            <pushImage>true</pushImage>
+                            <dockerDirectory>target/docker</dockerDirectory>
+                            <imageName>
+                                ${docker.repostory}/${docker.registry.name}/${project.artifactId}:${project.version}
+                            </imageName>
+                            <imageTags>
+                                <imageTag>${project.version}</imageTag>
+                                <imageTag>latest</imageTag>
+                            </imageTags>
+                            <resources>
+                                <rescource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </rescource>
                             </resources>
                         </configuration>
                     </plugin>
