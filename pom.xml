@@ -37,7 +37,28 @@
 
             <build>
                 <plugins>
-                    <!--基于Docker的镜像build、push插件-->
+               <!--     <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin.version}</version>
+                        <configuration>
+                            <dockerHost>${docker.dev.Host}</dockerHost>
+                            <imageName>${docker.dev.image.prefix}/${project.artifactId}</imageName>
+                            <baseImage>java:8</baseImage>
+                            <imageTags>
+                                <imageTag>${project.version}</imageTag>
+                            </imageTags>
+                            <entryPoint>["java", "-jar", "${project.build.finalName}.jar"]</entryPoint>
+                            <resources>
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </plugin>-->
+                    <!--基于Dockerfile的镜像build、push插件-->
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
@@ -53,7 +74,7 @@
                                 <resource>
                                     <targetPath>/</targetPath>
                                     <directory>${project.build.directory}</directory>
-                                    <include>${project.build.finalName}.jar</include>
+                                    <include>${project.build.finalName}.${project.packaging}</include>
                                 </resource>
                             </resources>
                         </configuration>
