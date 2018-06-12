@@ -18,7 +18,15 @@
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
 
         <docker.dev.Host>http://47.94.230.242:2375</docker.dev.Host>
-        <docker.repository>47.94.230.242:8081</docker.repository>
+        <docker.dev.registryUrl>http://47.94.230.242:8081/v2/</docker.dev.registryUrl>
+        <docker.dev.serverId>harbor</docker.dev.serverId>
+        <docker.dev.repository>47.94.230.242:8081</docker.dev.repository>
+
+        <docker.prod.Host>http://47.93.240.136:2375</docker.prod.Host>
+        <docker.prod.registryUrl>http://47.93.240.136:8081/v2/</docker.prod.registryUrl>
+        <docker.prod.serverId>harbor-prod</docker.prod.serverId>
+        <docker.prod.repository>47.93.240.136:8081</docker.prod.repository>
+
         <docker.registry.name>tax</docker.registry.name>
     </properties>
 
@@ -29,79 +37,211 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/docker</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/Dockerfile</include>
-                </includes>
-                <targetPath>../docker</targetPath>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+    <profiles>
 
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>${docker-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>tag-image</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>tag</goal>
-                        </goals>
+        <!--开发人员 日常开发、送测-->
+        <profile>
+            <id>devops-dev</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/docker</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>**/Dockerfile</include>
+                        </includes>
+                        <targetPath>../docker</targetPath>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin.version}</version>
+                        <executions>
+                            <!--开发人员日常开发，commit触发本地镜像的构建,版本为-dev-->
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <configuration>
+                                    <imageName>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}
+                                    </imageName>
+                                    <imageTags>
+                                        <imageTag>${project.version}-dev</imageTag>
+                                    </imageTags>
+                                </configuration>
+                            </execution>
+
+                            <!--送测，tag最后的版本为-test-->
+                            <execution>
+                                <id>tag-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <image>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-dev
+                                    </image>
+                                    <newName>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test
+                                    </newName>
+                                </configuration>
+                            </execution>
+
+                            <!--送测，将test版本push到镜像库-->
+                            <execution>
+                                <id>push-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <serverId>${docker.dev.serverId}</serverId>
+                                    <registryUrl>${docker.dev.registryUrl}</registryUrl>
+                                    <imageName>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test
+                                    </imageName>
+                                </configuration>
+                            </execution>
+
+                        </executions>
                         <configuration>
-                            <image>${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}</image>
-                            <newName>${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test</newName>
+                            <dockerHost>${docker.dev.Host}</dockerHost>
+                            <dockerDirectory>target/docker</dockerDirectory>
+                            <resources>
+                                <rescource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </rescource>
+                            </resources>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>push-image</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>push</goal>
-                        </goals>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!--测试人员 发版-->
+        <profile>
+            <id>devops-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>tag-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <image>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test
+                                    </image>
+                                    <newName>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
+                                    </newName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>push-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <serverId>${docker.dev.serverId}</serverId>
+                                    <registryUrl>${docker.dev.registryUrl}</registryUrl>
+                                    <imageName>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
+                                    </imageName>
+                                </configuration>
+                            </execution>
+                        </executions>
                         <configuration>
-                            <serverId>harbor</serverId>
-                            <registryUrl>http://47.94.230.242:8081/v2/</registryUrl>
+                            <dockerHost>${docker.dev.Host}</dockerHost>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!--部署人员远程部署-->
+        <profile>
+            <id>devops-prod</id>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/docker</directory>
+                        <filtering>true</filtering>
+                        <includes>
+                            <include>**/Dockerfile</include>
+                        </includes>
+                        <targetPath>../docker</targetPath>
+                    </resource>
+                </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>push-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <serverId>${docker.prod.serverId}</serverId>
+                                    <registryUrl>${docker.prod.registryUrl}</registryUrl>
+                                    <imageName>
+                                        ${docker.prod.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
+                                    </imageName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <dockerHost>${docker.prod.Host}</dockerHost>
+                            <dockerDirectory>target/docker</dockerDirectory>
                             <imageName>
-                                ${docker.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test
+                                ${docker.prod.repository}/${docker.registry.name}/${project.artifactId}
                             </imageName>
-
+                            <imageTags>
+                                <imageTag>${project.version}-prod</imageTag>
+                            </imageTags>
+                            <resources>
+                                <rescource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.build.directory}</directory>
+                                    <include>${project.build.finalName}.jar</include>
+                                </rescource>
+                            </resources>
                         </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <dockerHost>${docker.dev.Host}</dockerHost>
-                    <dockerDirectory>target/docker</dockerDirectory>
-                    <imageName>
-                        ${docker.repository}/${docker.registry.name}/${project.artifactId}
-                    </imageName>
-                    <imageTags>
-                        <imageTag>${project.version}</imageTag>
-                    </imageTags>
-                    <resources>
-                        <rescource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </rescource>
-                    </resources>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
