@@ -17,6 +17,14 @@ public class DevopsDemoController {
     public String home() {
         return "欢迎访问基于Docker的持续集成和持续交付项目样例";
     }
+    
+    /**
+     * test
+     */
+    @GetMapping(value = "/test")
+    public String test() {
+        return "test";
+    }
 
     /**
      * hello
