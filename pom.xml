@@ -151,6 +151,19 @@
                                     <newName>
                                         ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
                                     </newName>
+
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>tag-image-prod</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <image>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-test
+                                    </image>
                                     <newName>
                                         ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:prod-latest
                                     </newName>
