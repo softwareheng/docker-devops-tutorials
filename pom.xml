@@ -157,7 +157,7 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>push-image</id>
+                                <id>push-image-prod</id>
                                 <phase>install</phase>
                                 <goals>
                                     <goal>push</goal>
@@ -168,7 +168,17 @@
                                     <imageName>
                                         ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
                                     </imageName>
-
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>push-image-prod-latest</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                                <configuration>
+                                    <serverId>${docker.dev.serverId}</serverId>
+                                    <registryUrl>${docker.dev.registryUrl}</registryUrl>
                                     <imageName>
                                         ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:prod-latest
                                     </imageName>
