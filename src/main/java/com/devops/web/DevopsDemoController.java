@@ -19,7 +19,18 @@ public class DevopsDemoController {
     }
 
     /**
-     * hello world
+     * hello
+     *
+     * @return 打招呼
+     */
+    @GetMapping(value = "/hello")
+    public String hello() {
+        return "hello ";
+    }
+
+
+    /**
+     * sayHi
      *
      * @param name 姓名
      * @return 打招呼
@@ -28,4 +39,5 @@ public class DevopsDemoController {
     public String sayHi(@PathVariable(name = "name") String name) {
         return String.format("hello World ! %s !", name);
     }
+
 }
