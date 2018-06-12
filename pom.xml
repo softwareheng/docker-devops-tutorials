@@ -128,7 +128,7 @@
             </build>
         </profile>
 
-        <!--测试人员 发版-->
+        <!--测试人员-测试发版-->
         <profile>
             <id>devops-test</id>
             <build>
