@@ -151,6 +151,9 @@
                                     <newName>
                                         ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
                                     </newName>
+                                    <newName>
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:prod-latest
+                                    </newName>
                                 </configuration>
                             </execution>
                             <execution>
@@ -165,78 +168,15 @@
                                     <imageName>
                                         ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
                                     </imageName>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <dockerHost>${docker.dev.Host}</dockerHost>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
 
-        <!--部署人员远程部署-->
-        <profile>
-            <id>devops-prod</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/docker</directory>
-                        <filtering>true</filtering>
-                        <includes>
-                            <include>**/Dockerfile</include>
-                        </includes>
-                        <targetPath>../docker</targetPath>
-                    </resource>
-                </resources>
-                <plugins>
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.spotify</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>${docker-maven-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>push-image</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>push</goal>
-                                </goals>
-                                <configuration>
-                                    <serverId>${docker.prod.serverId}</serverId>
-                                    <registryUrl>${docker.prod.registryUrl}</registryUrl>
                                     <imageName>
-                                        ${docker.prod.repository}/${docker.registry.name}/${project.artifactId}:${project.version}-prod
+                                        ${docker.dev.repository}/${docker.registry.name}/${project.artifactId}:prod-latest
                                     </imageName>
                                 </configuration>
                             </execution>
                         </executions>
                         <configuration>
-                            <dockerHost>${docker.prod.Host}</dockerHost>
-                            <dockerDirectory>target/docker</dockerDirectory>
-                            <imageName>
-                                ${docker.prod.repository}/${docker.registry.name}/${project.artifactId}
-                            </imageName>
-                            <imageTags>
-                                <imageTag>${project.version}-prod</imageTag>
-                            </imageTags>
-                            <resources>
-                                <rescource>
-                                    <targetPath>/</targetPath>
-                                    <directory>${project.build.directory}</directory>
-                                    <include>${project.build.finalName}.jar</include>
-                                </rescource>
-                            </resources>
+                            <dockerHost>${docker.dev.Host}</dockerHost>
                         </configuration>
                     </plugin>
                 </plugins>
