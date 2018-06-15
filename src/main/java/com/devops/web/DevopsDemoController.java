@@ -19,14 +19,6 @@ public class DevopsDemoController {
     }
     
     /**
-     * test
-     */
-    @GetMapping(value = "/test")
-    public String test() {
-        return "test";
-    }
-
-    /**
      * hello
      *
      * @return 打招呼
