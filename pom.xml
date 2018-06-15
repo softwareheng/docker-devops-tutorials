@@ -21,12 +21,6 @@
         <docker.dev.registryUrl>http://47.94.230.242:8081/v2/</docker.dev.registryUrl>
         <docker.dev.serverId>harbor</docker.dev.serverId>
         <docker.dev.repository>47.94.230.242:8081</docker.dev.repository>
-
-        <docker.prod.Host>http://47.93.240.136:2375</docker.prod.Host>
-        <docker.prod.registryUrl>http://47.93.240.136:8081/v2/</docker.prod.registryUrl>
-        <docker.prod.serverId>harbor-prod</docker.prod.serverId>
-        <docker.prod.repository>47.93.240.136:8081</docker.prod.repository>
-
         <docker.registry.name>tax</docker.registry.name>
     </properties>
 
