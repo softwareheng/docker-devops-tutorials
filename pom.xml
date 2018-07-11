@@ -17,10 +17,10 @@
     <properties>
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
 
-        <docker.dev.Host>http://47.94.230.242:2375</docker.dev.Host>
-        <docker.dev.registryUrl>http://47.94.230.242:8081/v2/</docker.dev.registryUrl>
+        <docker.dev.Host>http://119.3.53.152:2375</docker.dev.Host>
+        <docker.dev.registryUrl>http://119.3.53.152:8081/v2/</docker.dev.registryUrl>
         <docker.dev.serverId>harbor</docker.dev.serverId>
-        <docker.dev.repository>47.94.230.242:8081</docker.dev.repository>
+        <docker.dev.repository>119.3.53.152:8081</docker.dev.repository>
         <docker.registry.name>tax</docker.registry.name>
     </properties>
 
