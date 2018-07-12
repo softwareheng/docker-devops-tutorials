@@ -12,7 +12,7 @@
 
     <groupId>com.devops.docker</groupId>
     <artifactId>docker-devops-tutorials</artifactId>
-    <version>1.0.2-RELEASE</version>
+    <version>1.0.3-RELEASE</version>
 
     <properties>
         <docker-maven-plugin.version>0.4.13</docker-maven-plugin.version>
